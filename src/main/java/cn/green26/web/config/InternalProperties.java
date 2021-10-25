@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 @Data
 public class InternalProperties {
     /**
-     * history message size
+     * internal message history size
      */
     private int history;
 }
