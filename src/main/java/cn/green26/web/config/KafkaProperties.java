@@ -8,8 +8,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @Data
 public class KafkaProperties {
-    /**
-     * kafka topic name
-     */
-    private String topic;
+    private String services;
+    private String acks;
+    private String autoOffsetReset;
+    private Integer concurrency;
+    private Boolean enableAutoCommit;
+    private Integer retries;
 }

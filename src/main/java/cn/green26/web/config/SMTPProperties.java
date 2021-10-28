@@ -2,10 +2,13 @@ package cn.green26.web.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 @Data
 @Configuration
+@Component("smt")
 @ConfigurationProperties(prefix = "mail.smtp")
 public class SMTPProperties {
     /**

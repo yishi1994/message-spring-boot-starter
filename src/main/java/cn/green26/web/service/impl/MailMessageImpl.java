@@ -7,6 +7,8 @@ import cn.green26.web.model.MailMessage;
 import cn.green26.web.model.MailReceiver;
 import cn.green26.web.service.IMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Service;
 
 import javax.mail.*;
@@ -14,24 +16,23 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import java.util.Optional;
 import java.util.Properties;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 @Service
+@EnableConfigurationProperties(SMTPProperties.class)
 public class MailMessageImpl implements IMessage<MailMessage, MailReceiver> {
     private Message message;
 
     @Autowired
+    @Qualifier("smt")
     private SMTPProperties smtpProperties;
 
     @Autowired
     private MailProperties mailProperties;
 
-    @Autowired
-    private ExecutorService executorService;
+    private final static ExecutorService executorService= Executors.newSingleThreadExecutor();
 
     private Session getSession(Properties properties) {
         return Session.getInstance(properties, new Authenticator() {
@@ -73,7 +74,7 @@ public class MailMessageImpl implements IMessage<MailMessage, MailReceiver> {
         message.setSubject(mailMessage.getSubject());
         MimeBodyPart mimeBodyPart = new MimeBodyPart();
         mimeBodyPart.setContent(mailMessage.getBody(),
-                EnumMailContentType.getEncodingByContentType(mailMessage.getContentType()));
+                EnumMailContentType.getValueByCode(mailMessage.getContentType().name()));
         Multipart multipart = new MimeMultipart();
         multipart.addBodyPart(mimeBodyPart);
         message.setContent(multipart);
@@ -82,13 +83,13 @@ public class MailMessageImpl implements IMessage<MailMessage, MailReceiver> {
 
     public Properties getSMTPProperties() {
         Properties properties = new Properties();
-        properties.getProperty("mail.smtp.from", mailProperties.getFrom());
-        properties.getProperty("mail.smtp.host", smtpProperties.getHost());
-        properties.getProperty("mail.smtp.port", smtpProperties.getPort());
-        properties.getProperty("mail.smtp.starttls.enable", smtpProperties.getTlsEnable());
-        properties.getProperty("mail.smtp.auth", smtpProperties.getAuth());
-        properties.getProperty("mail.smtp.username", smtpProperties.getUsername());
-        properties.getProperty("mail.smtp.password", smtpProperties.getPassword());
+        properties.setProperty("mail.smtp.from", mailProperties.getFrom());
+        properties.setProperty("mail.smtp.host", smtpProperties.getHost());
+        properties.setProperty("mail.smtp.port", smtpProperties.getPort());
+        properties.setProperty("mail.smtp.starttls.enable", smtpProperties.getTlsEnable());
+        properties.setProperty("mail.smtp.auth", smtpProperties.getAuth());
+        properties.setProperty("mail.smtp.username", smtpProperties.getUsername());
+        properties.setProperty("mail.smtp.password", smtpProperties.getPassword());
         return properties;
     }
 
@@ -114,7 +115,7 @@ public class MailMessageImpl implements IMessage<MailMessage, MailReceiver> {
 
     @Override
     public boolean send(MailMessage mailMessage, MailReceiver receiver)
-            throws ExecutionException, InterruptedException {
+            throws ExecutionException, InterruptedException, TimeoutException {
         Future<Boolean> result = executorService.submit(new MailHandler(mailMessage, receiver));
         if (result.isDone()) {
             return result.get();
