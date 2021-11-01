@@ -11,5 +11,5 @@ import java.util.Set;
 @Setter
 public class SmsReceiver implements IReceiver, Serializable {
     private static final long serialVersionUID = -6334340283319360364L;
-    private Set<Long> mobiles;
+    private Set<String> mobiles;
 }
