@@ -1,21 +1,21 @@
 package cn.green26.web.service.impl;
 
+import cn.green26.web.common.entity.sms.dto.SMSSendRespDTO;
 import cn.green26.web.config.SmsProperties;
-import cn.green26.web.model.SmsMessage;
-import cn.green26.web.model.SmsReceiver;
 import cn.green26.web.service.IMessage;
 import com.aliyun.dysmsapi20170525.Client;
 import com.aliyun.dysmsapi20170525.models.SendSmsRequest;
 import com.aliyun.dysmsapi20170525.models.SendSmsResponse;
-import com.aliyun.tea.utils.StringUtils;
 import com.aliyun.teaopenapi.models.Config;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.Random;
-
+@Slf4j
 @Service
-public class SmsMessageImpl implements IMessage<SmsMessage, SmsReceiver> {
+public class SmsMessageImpl implements IMessage<String, String, SMSSendRespDTO> {
     @Autowired
     private SmsProperties smsProperties;
 
@@ -30,15 +30,28 @@ public class SmsMessageImpl implements IMessage<SmsMessage, SmsReceiver> {
 
 
     @Override
-    public boolean send(SmsMessage message, SmsReceiver receiver) throws Exception {
+    public SMSSendRespDTO send(String message, String mobile) throws Exception {
+        if(message == null){
+            message=generateNumberVerifyCode(this.smsProperties.getLength());
+        }
         SendSmsRequest sendReq = new SendSmsRequest()
-                .setPhoneNumbers(StringUtils.join(",", receiver.getMobiles()))
+                .setPhoneNumbers(mobile)
                 .setSignName(smsProperties.getSignName())
                 .setTemplateCode(smsProperties.getSMSParameters())
-                .setTemplateParam("{\"code\":" + generateNumberVerifyCode(this.smsProperties.getLength()) + "}");
+                .setTemplateParam("{\"code\":" + message + "}");
         SendSmsResponse sendResp = getClient().sendSms(sendReq);
-        String code = sendResp.body.code;
-        return code.equals("OK");
+        SMSSendRespDTO respDTO = new SMSSendRespDTO();
+        respDTO.setCreateTime(new Date());
+        respDTO.setMobile(mobile);
+        if (sendResp != null && sendResp.body.code.equals("OK")) {
+            respDTO.setCode(message);
+            log.info("短信发送成功,mobile={},code={}",mobile,message);
+        } else {
+            String errorMessage = sendResp != null ? sendResp.body.message : "";
+            respDTO.setErrorMessage(errorMessage);
+            log.error("短信发送失败,mobile={},errorMessage={}",mobile,errorMessage);
+        }
+        return respDTO;
     }
 
 

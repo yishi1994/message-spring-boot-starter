@@ -1,18 +1,12 @@
 package cn.green26.web.config;
 
-import cn.green26.web.model.*;
-import cn.green26.web.service.impl.InternalMessageImpl;
-import cn.green26.web.service.impl.KafkaMessageImpl;
-import cn.green26.web.service.impl.MailMessageImpl;
-import cn.green26.web.service.impl.SmsMessageImpl;
+import cn.green26.web.service.impl.AlibabaCloudPush;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import cn.green26.web.service.IMessage;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
@@ -24,7 +18,7 @@ import java.util.Map;
 @EnableConfigurationProperties(value = {
         SmsProperties.class,
         KafkaProperties.class,
-        InternalProperties.class,
+        AliPushProperties.class,
         MailProperties.class,
         SMTPProperties.class
 })
@@ -32,29 +26,37 @@ import java.util.Map;
 public class MessageAutoConfiguration {
     @Autowired
     private KafkaProperties kafkaProperties;
-    @Bean
-    public IMessage<SmsMessage, SmsReceiver> smsMessage() {
-        return new SmsMessageImpl();
-    }
+    @Autowired
+    private AliPushProperties aliPushProperties;
+
+//    @Bean
+//    public IMessage<String, String, SMSSendRespDTO> smsMessage() {
+//        return new SmsMessageImpl();
+//    }
+//
+//    @Bean
+//    public IMessage<String, String, Boolean> kafkaMessage() {
+//        return new KafkaMessageImpl();
+//    }
+//
+//    @Bean
+//    public IMessage<MailMessage, MailReceiver, Boolean> mailMessage() {
+//        return new MailMessageImpl();
+//    }
+//
+//    @Bean
+//    public IMessage<AlibabaPushMessage, String, Boolean> internalMessage() {
+//        return new InternalMessageImpl();
+//    }
 
     @Bean
-    public IMessage<String, String> kafkaMessage() {
-        return new KafkaMessageImpl();
-    }
-
-    @Bean
-    public IMessage<MailMessage, MailReceiver> mailMessage() {
-        return new MailMessageImpl();
-    }
-
-    @Bean
-    public IMessage<InternalMessage, InternalMessageReceiver> internalMessage() {
-        return new InternalMessageImpl();
+    public AlibabaCloudPush alibabaCloudPush() {
+        return new AlibabaCloudPush(aliPushProperties);
     }
 
     @Bean
     public ConsumerFactory<String, String> consumerFactory() {
-        if(kafkaProperties == null){
+        if (kafkaProperties == null) {
             return null;
         }
         Map<String, Object> props = new HashMap<>();
@@ -68,7 +70,7 @@ public class MessageAutoConfiguration {
 
     @Bean("KafkaListenerFactory")
     public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory() {
-        if(kafkaProperties == null){
+        if (kafkaProperties == null) {
             return null;
         }
         Integer concurrency = kafkaProperties.getConcurrency();

@@ -22,7 +22,7 @@ import java.util.concurrent.*;
 
 @Service
 @EnableConfigurationProperties(SMTPProperties.class)
-public class MailMessageImpl implements IMessage<MailMessage, MailReceiver> {
+public class MailMessageImpl implements IMessage<MailMessage, MailReceiver,Boolean> {
     private Message message;
 
     @Autowired
@@ -114,7 +114,7 @@ public class MailMessageImpl implements IMessage<MailMessage, MailReceiver> {
     }
 
     @Override
-    public boolean send(MailMessage mailMessage, MailReceiver receiver)
+    public Boolean send(MailMessage mailMessage, MailReceiver receiver)
             throws ExecutionException, InterruptedException, TimeoutException {
         Future<Boolean> result = executorService.submit(new MailHandler(mailMessage, receiver));
         if (result.isDone()) {

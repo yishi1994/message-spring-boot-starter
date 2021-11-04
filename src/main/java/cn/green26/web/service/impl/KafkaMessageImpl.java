@@ -19,7 +19,7 @@ import java.util.Objects;
 
 @Slf4j
 @Service
-public class KafkaMessageImpl implements IMessage<String, String> {
+public class KafkaMessageImpl implements IMessage<String, String,Boolean> {
 
     @Autowired
     private KafkaProperties kafkaProperties;
@@ -42,7 +42,7 @@ public class KafkaMessageImpl implements IMessage<String, String> {
 
 
     @Override
-    public boolean send(String message, String topic) {
+    public Boolean send(String message, String topic) {
         ListenableFuture<SendResult<String, String>> future = kafkaTemplate().send(topic, message);
         future.addCallback(result -> log.info("生产者成功发送消息到topic:{},--- message:{}",
                 Objects.requireNonNull(result).getRecordMetadata().topic(),

@@ -52,6 +52,21 @@
             <artifactId>dysmsapi20170525</artifactId>
             <version>2.0.6</version>
         </dependency>
+        <dependency>
+            <groupId>cn.green26.web</groupId>
+            <artifactId>common</artifactId>
+            <version>2.0.6</version>
+        </dependency>
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>aliyun-java-sdk-push</artifactId>
+            <version>3.13.6</version>
+        </dependency>
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>aliyun-java-sdk-core</artifactId>
+            <version>[4.3.2,5.0.0)</version>
+        </dependency>
     </dependencies>
     <distributionManagement>
         <repository>
