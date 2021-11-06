@@ -8,21 +8,17 @@ import cn.green26.web.model.MailReceiver;
 import cn.green26.web.service.IMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.stereotype.Service;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-import java.util.Optional;
 import java.util.Properties;
 import java.util.concurrent.*;
 
-@Service
-@EnableConfigurationProperties(SMTPProperties.class)
-public class MailMessageImpl implements IMessage<MailMessage, MailReceiver,Boolean> {
+
+public class MailMessageImpl implements IMessage<MailMessage, MailReceiver, Boolean> {
     private Message message;
 
     @Autowired
@@ -32,7 +28,7 @@ public class MailMessageImpl implements IMessage<MailMessage, MailReceiver,Boole
     @Autowired
     private MailProperties mailProperties;
 
-    private final static ExecutorService executorService= Executors.newSingleThreadExecutor();
+    private final static ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     private Session getSession(Properties properties) {
         return Session.getInstance(properties, new Authenticator() {

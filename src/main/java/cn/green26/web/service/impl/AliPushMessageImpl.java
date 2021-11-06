@@ -3,14 +3,12 @@ package cn.green26.web.service.impl;
 import cn.green26.web.model.AlibabaPushMessage;
 import cn.green26.web.service.IMessage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-@Service
 public class AliPushMessageImpl implements IMessage<AlibabaPushMessage, String, Boolean> {
     @Autowired
     AlibabaCloudPush cloudPush;

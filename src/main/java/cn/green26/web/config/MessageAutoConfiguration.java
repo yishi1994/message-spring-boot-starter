@@ -1,6 +1,11 @@
 package cn.green26.web.config;
 
-import cn.green26.web.service.impl.AlibabaCloudPush;
+import cn.green26.web.common.entity.sms.dto.SMSSendRespDTO;
+import cn.green26.web.model.AlibabaPushMessage;
+import cn.green26.web.model.MailMessage;
+import cn.green26.web.model.MailReceiver;
+import cn.green26.web.service.IMessage;
+import cn.green26.web.service.impl.*;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,25 +34,25 @@ public class MessageAutoConfiguration {
     @Autowired
     private AliPushProperties aliPushProperties;
 
-//    @Bean
-//    public IMessage<String, String, SMSSendRespDTO> smsMessage() {
-//        return new SmsMessageImpl();
-//    }
-//
-//    @Bean
-//    public IMessage<String, String, Boolean> kafkaMessage() {
-//        return new KafkaMessageImpl();
-//    }
-//
-//    @Bean
-//    public IMessage<MailMessage, MailReceiver, Boolean> mailMessage() {
-//        return new MailMessageImpl();
-//    }
-//
-//    @Bean
-//    public IMessage<AlibabaPushMessage, String, Boolean> internalMessage() {
-//        return new InternalMessageImpl();
-//    }
+    @Bean
+    public IMessage<String, String, SMSSendRespDTO> smsMessage() {
+        return new SmsMessageImpl();
+    }
+
+    @Bean
+    public IMessage<String, String, Boolean> kafkaMessage() {
+        return new KafkaMessageImpl();
+    }
+
+    @Bean
+    public IMessage<MailMessage, MailReceiver, Boolean> mailMessage() {
+        return new MailMessageImpl();
+    }
+
+    @Bean
+    public IMessage<AlibabaPushMessage, String, Boolean> aliPushMessage() {
+        return new AliPushMessageImpl();
+    }
 
     @Bean
     public AlibabaCloudPush alibabaCloudPush() {

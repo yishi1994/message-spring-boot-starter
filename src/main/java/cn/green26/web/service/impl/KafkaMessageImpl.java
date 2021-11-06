@@ -10,7 +10,6 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.SendResult;
-import org.springframework.stereotype.Service;
 import org.springframework.util.concurrent.ListenableFuture;
 
 import java.util.HashMap;
@@ -18,8 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @Slf4j
-@Service
-public class KafkaMessageImpl implements IMessage<String, String,Boolean> {
+public class KafkaMessageImpl implements IMessage<String, String, Boolean> {
 
     @Autowired
     private KafkaProperties kafkaProperties;

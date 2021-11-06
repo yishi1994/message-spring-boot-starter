@@ -9,12 +9,11 @@ import com.aliyun.dysmsapi20170525.models.SendSmsResponse;
 import com.aliyun.teaopenapi.models.Config;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.Random;
+
 @Slf4j
-@Service
 public class SmsMessageImpl implements IMessage<String, String, SMSSendRespDTO> {
     @Autowired
     private SmsProperties smsProperties;
@@ -28,11 +27,10 @@ public class SmsMessageImpl implements IMessage<String, String, SMSSendRespDTO> 
     }
 
 
-
     @Override
     public SMSSendRespDTO send(String message, String mobile) throws Exception {
-        if(message == null){
-            message=generateNumberVerifyCode(this.smsProperties.getLength());
+        if (message == null) {
+            message = generateNumberVerifyCode(this.smsProperties.getLength());
         }
         SendSmsRequest sendReq = new SendSmsRequest()
                 .setPhoneNumbers(mobile)
@@ -45,11 +43,11 @@ public class SmsMessageImpl implements IMessage<String, String, SMSSendRespDTO> 
         respDTO.setMobile(mobile);
         if (sendResp != null && sendResp.body.code.equals("OK")) {
             respDTO.setCode(message);
-            log.info("短信发送成功,mobile={},code={}",mobile,message);
+            log.info("短信发送成功,mobile={},code={}", mobile, message);
         } else {
             String errorMessage = sendResp != null ? sendResp.body.message : "";
             respDTO.setErrorMessage(errorMessage);
-            log.error("短信发送失败,mobile={},errorMessage={}",mobile,errorMessage);
+            log.error("短信发送失败,mobile={},errorMessage={}", mobile, errorMessage);
         }
         return respDTO;
     }
@@ -68,7 +66,7 @@ public class SmsMessageImpl implements IMessage<String, String, SMSSendRespDTO> 
         Random rand = new Random(System.currentTimeMillis());
         StringBuilder verifyCode = new StringBuilder(verifySize);
 
-        for(int i = 0; i < verifySize; ++i) {
+        for (int i = 0; i < verifySize; ++i) {
             verifyCode.append(sources.charAt(rand.nextInt(codesLen - 1)));
         }
 
