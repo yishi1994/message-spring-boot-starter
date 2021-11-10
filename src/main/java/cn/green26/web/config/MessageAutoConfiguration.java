@@ -25,7 +25,8 @@ import java.util.Map;
         KafkaProperties.class,
         AliPushProperties.class,
         MailProperties.class,
-        SMTPProperties.class
+        SMTPProperties.class,
+        DingPushProperties.class
 })
 @Configuration
 public class MessageAutoConfiguration {
@@ -52,6 +53,11 @@ public class MessageAutoConfiguration {
     @Bean
     public IMessage<AlibabaPushMessage, String, Boolean> aliPushMessage() {
         return new AliPushMessageImpl();
+    }
+
+    @Bean
+    public IMessage<String, String, String> dingMessage() {
+        return new DingMessageImpl();
     }
 
     @Bean
