@@ -4,6 +4,7 @@ import cn.green26.web.common.entity.sms.dto.SMSSendRespDTO;
 import cn.green26.web.model.AlibabaPushMessage;
 import cn.green26.web.model.MailMessage;
 import cn.green26.web.model.MailReceiver;
+import cn.green26.web.model.WxMpTemplateMessage;
 import cn.green26.web.service.IMessage;
 import cn.green26.web.service.impl.*;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -58,6 +59,11 @@ public class MessageAutoConfiguration {
     @Bean
     public IMessage<String, String, String> dingMessage() {
         return new DingMessageImpl();
+    }
+
+    @Bean
+    public IMessage<WxMpTemplateMessage, String, String> wxMessage() {
+        return new WxMpTemplateMessageImpl();
     }
 
     @Bean
