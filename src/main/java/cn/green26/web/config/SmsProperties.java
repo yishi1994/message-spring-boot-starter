@@ -2,11 +2,8 @@ package cn.green26.web.config;
 
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
 
 @Data
 @Configuration
@@ -29,7 +26,7 @@ public class SmsProperties {
     private String accessKeySecret;
     private String regionId;
     private String endpointName;
-    private int maxTime;
+    private int maxTimes;
     private String range;
     private int length;
     private String signName;
